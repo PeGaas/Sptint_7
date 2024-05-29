@@ -1,9 +1,15 @@
 import allure
-from conftest import limit_orders
+import requests
+
+from data_static import LIMIT_ORDERS, MAIN_URL, GET_LIST_ORDERS_URL
 
 
 class TestListOrders:
 
     @allure.title('Получить заказы и проверить тело ответа возвращает список заказов')
-    def test_get_orders_return_list_orders(self, get_orders):
-        assert len(get_orders.json()['orders']) == limit_orders
+    def test_get_orders_return_list_orders(self):
+        # Получить список заказов
+        params = {"limit": LIMIT_ORDERS}
+        response = requests.get(f'{MAIN_URL}{GET_LIST_ORDERS_URL}', params=params)
+
+        assert len(response.json()['orders']) == LIMIT_ORDERS

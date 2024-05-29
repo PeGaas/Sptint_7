@@ -1,16 +1,15 @@
 import allure
 import pytest
 import requests
-from conftest import login, password
 from data_generator import generate_password, generate_login
-from data_static import MAIN_URL
+from data_static import MAIN_URL, LOGIN, PASSWORD
 
 
 class TestLoginCourier:
 
     @allure.title('Выполнить логин с логином и паролем')
-    def test_login_courier_with_login_password_true(self, create_new_courier):
-        payload = {"login": login, "password": password}
+    def test_login_courier_with_login_password_true(self, create_courier):
+        payload = {"login": LOGIN, "password": PASSWORD}
         response = requests.post(f'{MAIN_URL}/api/v1/courier/login', data=payload)
         id_courier = response.json()['id']
 
@@ -32,8 +31,8 @@ class TestLoginCourier:
         assert response.status_code == 400 and response.json() == {'code': 400, 'message': 'Недостаточно данных для входа'}
 
     @allure.title('Логин возвращает идентификатор курьера')
-    def test_login_courier_return_id_courier(self, create_new_courier):
-        payload = {"login": login, "password": password}
+    def test_login_courier_return_id_courier(self, create_courier):
+        payload = {"login": LOGIN, "password": PASSWORD}
         response = requests.post(f'{MAIN_URL}/api/v1/courier/login', data=payload)
         id_courier = response.json()['id']
 
