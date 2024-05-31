@@ -13,11 +13,7 @@ class TestDeleteCourier:
         assert response.json() == {'code': 404, 'message': 'Курьера с таким id нет.'}
 
     @allure.title('Удалить курьера')
-    def test_delete_courier_return_ok_true(self):
-        # Создать нового курьера
-        payload = {"login": LOGIN, "password": PASSWORD, "firstName": FIRST_NAME}
-        requests.post(f'{MAIN_URL}{CREATE_COURIER_URL}', data=payload)
-
+    def test_delete_courier_return_ok_true(self, create_courier):
         # Получить id курьера
         payload = {"login": LOGIN, "password": PASSWORD}
         response = requests.post(f'{MAIN_URL}{LOGIN_COURIER_URL}', data=payload)

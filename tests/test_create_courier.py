@@ -7,14 +7,10 @@ from data_static import MAIN_URL, LOGIN, PASSWORD, FIRST_NAME, CREATE_COURIER_UR
 class TestCreateCourier:
 
     @allure.title('Создать двух одинаковых курьеров')
-    def test_create_two_same_courier_show_message_conflict(self, delete_courier):
-        # Создать нового курьера
-        payload = {"login": LOGIN, "password": PASSWORD, "firstName": FIRST_NAME}
-        requests.post(f'{MAIN_URL}{CREATE_COURIER_URL}', data=payload)
-
+    def test_create_two_same_courier_show_message_conflict(self, create_courier, delete_courier):
         # Создать еще одного такого же курьера
         payload = {"login": LOGIN, "password": PASSWORD, "firstName": FIRST_NAME}
-        response = requests.post(f'{MAIN_URL}/api/v1/courier', data=payload)
+        response = requests.post(f'{MAIN_URL}{CREATE_COURIER_URL}', data=payload)
 
         assert response.status_code == 409 and response.json() == {"code": 409,
                                                                    "message": "Этот логин уже используется. Попробуйте другой."}
@@ -44,11 +40,7 @@ class TestCreateCourier:
         assert response.json() == {'code': 400, 'message': 'Недостаточно данных для создания учетной записи'}
 
     @allure.title('Создать курьера c логином, который уже существует в системе')
-    def test_create_courier_with_login_already_exists_show_message_conflict(self, delete_courier):
-        # Создать нового курьера
-        payload = {"login": LOGIN, "password": PASSWORD, "firstName": FIRST_NAME}
-        requests.post(f'{MAIN_URL}{CREATE_COURIER_URL}', data=payload)
-
+    def test_create_courier_with_login_already_exists_show_message_conflict(self, create_courier, delete_courier):
         # Создать еще одного курьера с таким же логином
         payload = {"login": LOGIN, "password": generate_password(), "firstName": generate_first_name()}
         response = requests.post(f'{MAIN_URL}/api/v1/courier', data=payload)

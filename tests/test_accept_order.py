@@ -3,14 +3,14 @@ import requests
 
 from data_generator import generate_first_name, generate_password, generate_address, generate_metro_station, \
     generate_phone, generate_rent_time, generate_delivery_date, generate_comment, generate_color, generate_courier_id
-from data_static import MAIN_URL, CREATE_ORDER_URL, LOGIN, PASSWORD, FIRST_NAME, CREATE_COURIER_URL, ACCEPT_ORDER_URL, \
+from data_static import MAIN_URL, CREATE_ORDER_URL, LOGIN, PASSWORD, FIRST_NAME, ACCEPT_ORDER_URL, \
     LOGIN_COURIER_URL
 
 
 class TestAcceptOrder:
 
     @allure.title('Принять заказ без id курьера')
-    def test_accept_order_without_courier_id_return_message_conflict(self):
+    def test_accept_order_without_courier_id_return_message_conflict(self, create_courier, delete_courier):
         # Создать заказ
         payload_order = {"firstName": generate_first_name(), "lastName": generate_password(),
                          "address": generate_address(),
@@ -20,10 +20,6 @@ class TestAcceptOrder:
                          "color": generate_color()}
         response_order = requests.post(f'{MAIN_URL}{CREATE_ORDER_URL}', json=payload_order)
         order_id = response_order.json()['track']
-
-        # Создать курьера
-        payload_courier = {"login": LOGIN, "password": PASSWORD, "firstName": FIRST_NAME}
-        requests.post(f'{MAIN_URL}{CREATE_COURIER_URL}', data=payload_courier)
 
         # Принять заказ
         params = {'courierId': ""}
@@ -52,10 +48,9 @@ class TestAcceptOrder:
             'code': 404, 'message': 'Курьера с таким id не существует'}
 
     @allure.title('Принять заказ с не корректным id заказа')
-    def test_accept_order_with_incorrect_order_id_return_message_error(self):
-        # Создать курьера
+    def test_accept_order_with_incorrect_order_id_return_message_error(self, create_courier, delete_courier):
+        # Получить id курьера
         payload_courier = {"login": LOGIN, "password": PASSWORD, "firstName": FIRST_NAME}
-        requests.post(f'{MAIN_URL}{CREATE_COURIER_URL}', data=payload_courier)
         response_courier = requests.post(f'{MAIN_URL}{LOGIN_COURIER_URL}', data=payload_courier)
         id_courier = response_courier.json()['id']
 

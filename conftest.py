@@ -20,5 +20,5 @@ def delete_courier():
 def create_courier():
     # Создать нового курьера
     payload = {"login": LOGIN, "password": PASSWORD, "firstName": FIRST_NAME}
-    response = requests.post(f'{MAIN_URL}{CREATE_COURIER_URL}', data=payload)
-    yield response
+    requests.post(f'{MAIN_URL}{CREATE_COURIER_URL}', data=payload)
+
